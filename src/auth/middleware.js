@@ -17,7 +17,7 @@ module.exports = (req, res, next) => {
     }
   }
   catch(e) {
-    next(e);
+    _authError();
   }
   
   /**
