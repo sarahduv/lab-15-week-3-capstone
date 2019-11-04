@@ -59,7 +59,7 @@ authRouter.post('/image', (req, res, next) => {
 
 
 function handleGetAll(request,response,next) {
-  Image.get()
+  Image.find({})
     .then( data => {
       const output = {
         count: data.length,
