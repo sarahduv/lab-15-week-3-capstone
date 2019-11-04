@@ -59,7 +59,7 @@ authRouter.post('/image', (req, res, next) => {
 
 
 function handleGetAll(request,response,next) {
-  request.images.get()
+  Image.get()
     .then( data => {
       const output = {
         count: data.length,
@@ -71,6 +71,7 @@ function handleGetAll(request,response,next) {
 }
 
 function handleGetOne(request,response,next) {
+  console.log(request.params);
   request.images.get(request.params.id)
     .then( result => response.status(200).json(result[0]) )
     .catch( next );

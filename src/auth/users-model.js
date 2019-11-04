@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+
 const users = new mongoose.Schema({
   username: {type:String, required:true, unique:true},
   password: {type:String, required:true},
@@ -49,13 +50,19 @@ users.statics.createFromOauth = function(email) {
  * @returns {object} - this object query
  */
 users.statics.authenticateToken = function(token) {
+  console.log('token is ', token);
   let parsedToken = jwt.verify(token, process.env.SECRET);
-  if (Date.now() - parsedToken.generatedAt > (1400*60)) {
-    throw new Error('Token has expired');
-  }
+  console.log('parsed token is  ', parsedToken);
+  // if (Date.now() - parsedToken.generatedAt > (1400*60)) {
+  //   throw new Error('Token has expired');
+  // }
   let query = {_id: parsedToken.id};
+  console.log('query is', query);
   return this.findOne(query);
 };
+
+
+
 
 /**
  * A function that authenticates in basic form

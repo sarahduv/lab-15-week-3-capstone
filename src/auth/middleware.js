@@ -6,7 +6,7 @@ module.exports = (req, res, next) => {
   
   try {
     let [authType, authString] = req.headers.authorization.split(/\s+/);
-    
+
     switch( authType.toLowerCase() ) {
     case 'basic': 
       return _authBasic(authString);
@@ -46,7 +46,10 @@ module.exports = (req, res, next) => {
     console.log('first log', authString);
     return User.authenticateToken(authString)
       .then( user => _authenticate(user) )
-      .catch(next);
+      .catch((e) => {
+        console.log(e);
+        next(e);
+      });
   }
 
   /**
