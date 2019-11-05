@@ -30,6 +30,12 @@ authRouter.get('/images', auth, handleGetAll);
 
 authRouter.get('/image/:id', auth, handleGetOne);
 
+authRouter.get('/imageByUserId/:userId', auth, handleGetOneByUserId);
+
+authRouter.put('/image/:id', auth, handlePut);
+
+authRouter.delete('/image/:id', auth, handleDelete);
+
 
 authRouter.get('/oauth', (req,res,next) => {
   oauth.authorize(req)
@@ -47,7 +53,8 @@ authRouter.get('/protected', auth, (req, res) => {
   res.send('you have a valid token');
 });
 
-authRouter.post('/image', (req, res, next) => {
+authRouter.post('/images', (req, res, next) => {
+  console.log(req.body);
   let image = new Image(req.body);
   image.save()
     .then( async (image) => {
@@ -59,23 +66,51 @@ authRouter.post('/image', (req, res, next) => {
 
 
 function handleGetAll(request,response,next) {
-  Image.get()
+  Image.find({})
     .then( data => {
-      const output = {
-        count: data.length,
-        results: data,
-      };
-      response.status(200).json(output);
+      response.status(200).json(data);
     })
     .catch( next );
 }
 
 function handleGetOne(request,response,next) {
-  console.log(request.params);
-  request.images.get(request.params.id)
-    .then( result => response.status(200).json(result[0]) )
+  console.log('handlegetone params', request.params);
+  const imageToFind = request.params.id;
+  Image.find({_id: imageToFind})
+    .then( data => {
+      const output = {
+        results: data,
+      };      
+      response.status(200).json(output);
+      console.log('result is', output);})
     .catch( next );
 }
 
+function handleGetOneByUserId(request,response,next) {
+  console.log('handlegetone params', request.params);
+  const imageToFind = request.params.userId;
+  Image.find({user_id: imageToFind})
+    .then( data => {
+      const output = {
+        results: data,
+      };      
+      response.status(200).json(output);
+      console.log('result is', output);})
+    .catch( next );
+}
+
+function handlePut(request,response,next) {
+  console.log('handleput params', request.params);
+  console.log('handleput body', request.body);
+  Image.update({_id: request.params.id}, request.body)
+    .then( result => response.status(200).json(result) )
+    .catch( next );
+}
+
+function handleDelete(request,response,next) {
+  Image.remove({_id: request.params.id})
+    .then( result => response.status(200).json(result) )
+    .catch( next );
+}
 
 module.exports = authRouter;

@@ -7,7 +7,7 @@ const images = new mongoose.Schema({
   user_id: {type: String, required:true, unique:true},
   description: {type: String},
   url: {type: String, required:true},
-  created_at: {type: String, required:true},
+  created_at: {type: String},
 });
 
 
