@@ -1,10 +1,11 @@
 'use strict';
 
 const app = require('../src/app');
-const User = require('../src/model/user');
+const User = require('../src/auth/users-model');
 const supergoose = require('./supergoose');
 const request = supergoose.server((app.server));
 const jwt = require('jsonwebtoken');
+const SECRET = 'secret';
 
 beforeAll(supergoose.startDB);
 afterAll(supergoose.stopDB);
@@ -17,7 +18,7 @@ describe('Testing express routes', () => {
       return request.post('/signup')
         .send(authTestUser)
         .then(response => {
-          const parsedToken = jwt.verify(response.text, process.env.SECRET);
+          const parsedToken = jwt.verify(response.text, SECRET);
           expect(response.status).toBe(200);
           expect(parsedToken.id).toBeDefined();
           done();
@@ -28,7 +29,7 @@ describe('Testing express routes', () => {
       return request.post('/signin')
         .auth('userman', 'private')
         .then(response => {
-          const parsedToken = jwt.verify(response.text, process.env.SECRET);
+          const parsedToken = jwt.verify(response.text, SECRET);
           expect(response.status).toBe(200);
           expect(parsedToken.id).toBeDefined();
           done();
